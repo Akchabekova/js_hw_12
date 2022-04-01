@@ -2,34 +2,74 @@ const addInput =document.querySelector('.add-input')
 const addBtn =document.querySelector('.add-btn')
 const todoList =document.querySelector('.todo-list')
 
+let allTodos = JSON.parse(localStorage.getItem('todos')) || []
+
+addBtn.addEventListener('click',()=>{
+    addNewItem()
+})
+
+addInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter'){
+       addNewItem()
+    }
+})
 
 
-addBtn.addEventListener('click', ()=>{
-    if(addInput.value.length === 0){
-        alert('Please, text your new item!')
+const addNewItem = () =>{
+    if(addInput.value.trim() === ""){
+        alert('Please, enter item name')
+        addInput.value = ""
         return
     }
+    allTodos = [...allTodos, addInput.value]
+    localStorage.setItem('todos', JSON.stringify(allTodos))
+    addInput.value = ""
+    drawList(allTodos)
+}
 
-    const li =document.createElement('li')
-    li.classList.add('list-group-item' ,'d-flex' ,'justify-content-between')
+const drawItem = (itemText) =>{
+    const li = document.createElement('li')
+    li.classList.add('list-group-item' ,'d-flex' ,'justify-content-between','items-medium')
     const span =document.createElement('span')
-    span.textContent = addInput.value
+    span.textContent = itemText
     const button = document.createElement('button')
     button.classList.add('btn', 'btn-danger','btn-sm','delete-btn')
-    button.textContent ='Delete'
+    button.textContent = 'Delete'
     li.appendChild(span)
     li.appendChild(button)
     todoList.appendChild(li)
-    addInput.value =''
-    const listGroupItems = document.querySelectorAll('.list-group-item')
+}
+
+const clickDeleteBtn = () =>{
     const deleteButtons = document.querySelectorAll('.delete-btn')
-    deleteButtons.forEach((oneDeleteBtn,idx)=>{
-        oneDeleteBtn.addEventListener('click', ()=>{
-            listGroupItems[idx].remove()
+    deleteButtons.forEach((deleteBtn, btnIndex) => {
+        deleteBtn.addEventListener('click', ()=>{
+            allTodos =  allTodos.filter((todoFromStorage, indexFromStorage) => btnIndex != indexFromStorage)
+            localStorage.setItem('todos', JSON.stringify(allTodos))
+            drawList(allTodos)
         })
     })
+}
 
-})
+const  drawList = (array) =>{
+    todoList.innerHTML = ''
+    array.forEach((todo)=>{
+        drawItem(todo)
+    })
+    clickDeleteBtn()
+}
+
+
+drawList(allTodos)
+
+//box.style.height = '500px'
+
+
+
+
+
+
+
 
 
 
