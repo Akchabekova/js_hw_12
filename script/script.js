@@ -62,7 +62,7 @@ const  drawList = (array) =>{
 
 drawList(allTodos)
 
-//box.style.height = '500px'
+
 
 
 
